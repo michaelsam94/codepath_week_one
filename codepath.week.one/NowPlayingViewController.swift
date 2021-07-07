@@ -31,48 +31,98 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
     
     @IBOutlet weak var nowPlayingTableView: UITableView!
     
-    var nowPlayingMoviesRes: NowPlayingRes? = nil
+    var movies: [Result]? = []
+    
+    private var currentPage = 1
+    private var totalNumberOfMovies = 1
+    private var isFetchInProgress = false
+    private var numOfLoadedMovies = 0
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchMovies()
         nowPlayingTableView.delegate = self
         nowPlayingTableView.dataSource = self
+        fetchMovies()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        nowPlayingMoviesRes?.results?.count ?? 0
+        return numOfLoadedMovies
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =
             tableView.dequeueReusableCell(withIdentifier: "NowPlayingTableViewCell") as? NowPlayingTableViewCell
         cell?.selectionStyle = .none
-        
+        print("row \(indexPath.row)")
+        if isLoadingCell(for: indexPath) {
+            if totalNumberOfMovies > numOfLoadedMovies {
+                fetchMovies()
+            }
+        }
         return cell!
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let nowPlayingCell = cell as? NowPlayingTableViewCell
-        nowPlayingCell?.movieTitleLabel.text = nowPlayingMoviesRes?.results?[indexPath.row].title ?? "no title"
-        nowPlayingCell?.movieDescTextView.text = nowPlayingMoviesRes?.results?[indexPath.row].overview ?? "no overview"
-        if let imagePath = nowPlayingMoviesRes?.results?[indexPath.row].poster_path {
+        nowPlayingCell?.movieTitleLabel.text = movies?[indexPath.row].title ?? "no title"
+        nowPlayingCell?.movieDescTextView.text = movies?[indexPath.row].overview ?? "no overview"
+        if let imagePath = movies?[indexPath.row].poster_path {
             nowPlayingCell?.movieImageView?.loadImage(at: "https://image.tmdb.org/t/p/w154\(imagePath)")
             print("imagepath https://image.tmdb.org/t/p/w154\(imagePath)")
         }
     }
+    
+
     
 }
 
 
 extension NowPlayingViewController {
     func fetchMovies() {
-        let request = AF.request("\(baseUrl)movie/now_playing?api_key=\(apiKey)")
+        guard !self.isFetchInProgress else {
+            return
+        }
+        
+        self.isFetchInProgress = true
+        
+        let request = AF.request("\(baseUrl)movie/now_playing?api_key=\(apiKey)&page=\(self.currentPage)")
         request.responseDecodable(of: NowPlayingRes.self) { (response) in
             guard let nowPlayingResponse = response.value else { return }
-            self.nowPlayingMoviesRes = nowPlayingResponse
+            
+            self.currentPage += 1
+            self.isFetchInProgress = false
+            self.numOfLoadedMovies += nowPlayingResponse.results?.count ?? 0
+            
+            self.totalNumberOfMovies = nowPlayingResponse.total_results ?? 1
+            self.movies?.append(contentsOf: nowPlayingResponse.results ?? [])
+            
             self.nowPlayingTableView.reloadData()
+            
+            if nowPlayingResponse.page ?? 1 > 1 {
+                let indexPathsToBeReload = self.calculateIndexPathsToReload(from: nowPlayingResponse.results ?? [])
+                self.nowPlayingTableView.reloadRows(at: indexPathsToBeReload, with: .automatic)
+            }
+            
+            
+            
         }
+    }
+    
+    
+    func calculateIndexPathsToReload(from newMovies: [Result]) -> [IndexPath] {
+        let startIndex = (self.movies?.count ?? 0) - newMovies.count
+        let endIndex = startIndex + newMovies.count
+        return (startIndex..<endIndex).map { IndexPath(row: $0, section: 0) }
+    }
+    
+    func isLoadingCell(for indexPath: IndexPath) -> Bool {
+        return indexPath.row == numOfLoadedMovies - 1
+    }
+    
+    func visibleIndexPathsToReload(intersecting indexPaths: [IndexPath]) -> [IndexPath] {
+        let indexPathsForVisibleRows = self.nowPlayingTableView.indexPathsForVisibleRows ?? []
+        let indexPathsIntersection = Set(indexPathsForVisibleRows).intersection(indexPaths)
+        return Array(indexPathsIntersection)
     }
 }

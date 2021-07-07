@@ -10,12 +10,12 @@ struct NowPlayingRes: Codable {
     let dates: Dates?
     let page: Int?
     let results: [Result]?
-    let totalPages, totalResults: Int?
+    let total_pages, total_results: Int?
 
     enum CodingKeys: String, CodingKey {
         case dates, page, results
-        case totalPages
-        case totalResults
+        case total_pages
+        case total_results
     }
 }
 
