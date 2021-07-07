@@ -1,0 +1,6 @@
+framework module Pods_codepath_week_oneTests {
+  umbrella header "Pods-codepath.week.oneTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
