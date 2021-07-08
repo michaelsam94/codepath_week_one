@@ -45,15 +45,21 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
                 RappleActivityIndicatorView.startAnimating()
             } else {
                 RappleActivityIndicatorView.stopAnimation()
+                refreshControl.endRefreshing()
             }
         }
     }
+    
+    let refreshControl = UIRefreshControl()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         nowPlayingTableView.delegate = self
         nowPlayingTableView.dataSource = self
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        nowPlayingTableView?.addSubview(refreshControl)
         fetchMovies()
     }
     
@@ -82,6 +88,14 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
             nowPlayingCell?.movieImageView?.loadImage(at: "https://image.tmdb.org/t/p/w154\(imagePath)")
             print("imagepath https://image.tmdb.org/t/p/w154\(imagePath)")
         }
+    }
+    
+    
+    @objc func refresh(_ sender: AnyObject) {
+        currentPage = 1
+        numOfLoadedMovies = 0
+        movies?.removeAll()
+        fetchMovies()
     }
     
 
