@@ -2,20 +2,24 @@ PODS:
   - Alamofire (5.4.3)
   - AlamofireNetworkActivityLogger (3.4.0):
     - Alamofire (~> 5.4.0)
+  - RappleProgressHUD (4.1)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
   - AlamofireNetworkActivityLogger
+  - RappleProgressHUD
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - AlamofireNetworkActivityLogger
+    - RappleProgressHUD
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   AlamofireNetworkActivityLogger: 162ab8aee00e6267a4304d7cc134e13ccfe3bcc5
+  RappleProgressHUD: f29bc5dc5f9834c2caa9c2ae21ba11f3ff2b5a85
 
-PODFILE CHECKSUM: fa53b56c906c0f5079e97623caf504d90b4ab3a8
+PODFILE CHECKSUM: 39928870f258be7b51b613ef5b713ce31397e41d
 
 COCOAPODS: 1.10.1

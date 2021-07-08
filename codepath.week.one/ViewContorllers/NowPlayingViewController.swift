@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import RappleProgressHUD
 
 let baseUrl = "https://api.themoviedb.org/3/"
 let apiKey = "6bdd92e829e5beb0f2902f834db79e10"
@@ -35,8 +36,18 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
     
     private var currentPage = 1
     private var totalNumberOfMovies = 1
-    private var isFetchInProgress = false
     private var numOfLoadedMovies = 0
+    
+    
+    private var isFetchInProgress = false {
+        didSet {
+            if isFetchInProgress {
+                RappleActivityIndicatorView.startAnimating()
+            } else {
+                RappleActivityIndicatorView.stopAnimation()
+            }
+        }
+    }
     
     
     override func viewDidLoad() {

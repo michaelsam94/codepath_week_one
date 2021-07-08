@@ -8,6 +8,7 @@ target 'codepath.week.one' do
   # Pods for codepath.week.one
   pod 'Alamofire', '~> 5.2'
   pod 'AlamofireNetworkActivityLogger'
+  pod 'RappleProgressHUD'
 
   target 'codepath.week.oneTests' do
     inherit! :search_paths
