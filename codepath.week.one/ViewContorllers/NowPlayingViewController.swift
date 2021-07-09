@@ -71,7 +71,7 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
         let cell =
             tableView.dequeueReusableCell(withIdentifier: "NowPlayingTableViewCell") as? NowPlayingTableViewCell
         cell?.selectionStyle = .none
-        print("row \(indexPath.row)")
+        //print("row \(indexPath.row)")
         if isLoadingCell(for: indexPath) {
             if totalNumberOfMovies > numOfLoadedMovies {
                 fetchMovies()
@@ -85,8 +85,8 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
         nowPlayingCell?.movieTitleLabel.text = movies?[indexPath.row].title ?? "no title"
         nowPlayingCell?.movieDescTextView.text = movies?[indexPath.row].overview ?? "no overview"
         if let imagePath = movies?[indexPath.row].poster_path {
-            nowPlayingCell?.movieImageView?.loadImage(at: "https://image.tmdb.org/t/p/w154\(imagePath)")
-            print("imagepath https://image.tmdb.org/t/p/w154\(imagePath)")
+            nowPlayingCell?.movieImageView?.loadImage(at: "\(posterBaseUrl)\(imagePath)")
+            //print("imagepath https://image.tmdb.org/t/p/w154\(imagePath)")
         }
     }
     
@@ -108,30 +108,23 @@ extension NowPlayingViewController {
         guard !self.isFetchInProgress else {
             return
         }
-        
         self.isFetchInProgress = true
         
-        let request = AF.request("\(baseUrl)movie/now_playing?api_key=\(apiKey)&page=\(self.currentPage)")
-        request.responseDecodable(of: NowPlayingRes.self) { (response) in
-            guard let nowPlayingResponse = response.value else { return }
-            
+        NetworkOperations().getNowPlayingMovies(page: currentPage, completionsHandler: {(respone) in
             self.currentPage += 1
             self.isFetchInProgress = false
-            self.numOfLoadedMovies += nowPlayingResponse.results?.count ?? 0
+            self.numOfLoadedMovies += respone.results?.count ?? 0
             
-            self.totalNumberOfMovies = nowPlayingResponse.total_results ?? 1
-            self.movies?.append(contentsOf: nowPlayingResponse.results ?? [])
+            self.totalNumberOfMovies = respone.total_results ?? 1
+            self.movies?.append(contentsOf: respone.results ?? [])
             
             self.nowPlayingTableView.reloadData()
             
-            if nowPlayingResponse.page ?? 1 > 1 {
-                let indexPathsToBeReload = self.calculateIndexPathsToReload(from: nowPlayingResponse.results ?? [])
+            if respone.page ?? 1 > 1 {
+                let indexPathsToBeReload = self.calculateIndexPathsToReload(from: respone.results ?? [])
                 self.nowPlayingTableView.reloadRows(at: indexPathsToBeReload, with: .automatic)
             }
-            
-            
-            
-        }
+        })
     }
     
     
