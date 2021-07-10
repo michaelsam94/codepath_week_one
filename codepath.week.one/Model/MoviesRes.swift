@@ -6,7 +6,7 @@
 import Foundation
 
 // MARK: - NowPlayingRes
-struct NowPlayingRes: Codable {
+struct MoviesRes: Codable {
     let dates: Dates?
     let page: Int?
     let results: [Result]?

@@ -10,7 +10,7 @@ import Alamofire
 import RappleProgressHUD
 
 
-class NowPlayingTableViewCell: UITableViewCell {
+class MoviesTableViewCell: UITableViewCell {
     
     @IBOutlet weak var movieImageView: UIImageView!
     
@@ -77,7 +77,7 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =
-            tableView.dequeueReusableCell(withIdentifier: "NowPlayingTableViewCell") as? NowPlayingTableViewCell
+            tableView.dequeueReusableCell(withIdentifier: "moviesTableViewCell") as? MoviesTableViewCell
         cell?.selectionStyle = .none
         //print("row \(indexPath.row)")
         if isLoadingCell(for: indexPath) {
@@ -89,7 +89,7 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let nowPlayingCell = cell as? NowPlayingTableViewCell
+        let nowPlayingCell = cell as? MoviesTableViewCell
         nowPlayingCell?.movieTitleLabel.text = movies?[indexPath.row].title ?? "no title"
         nowPlayingCell?.movieDescTextView.text = movies?[indexPath.row].overview ?? "no overview"
         if let imagePath = movies?[indexPath.row].poster_path {

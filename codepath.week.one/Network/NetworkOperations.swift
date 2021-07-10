@@ -19,13 +19,25 @@ class NetworkOperations {
         apiKey = Utilities().getApiKey()
     }
     
-    public func getNowPlayingMovies(page: Int,completionsHandler: @escaping (NowPlayingRes) -> Void) {
+    public func getNowPlayingMovies(page: Int,completionsHandler: @escaping (MoviesRes) -> Void) {
         let paramaters = [
             "api_key": apiKey,
             "page": String(page)
         ]
         let request = AF.request("\(baseUrl)movie/now_playing",parameters: paramaters)
-        request.responseDecodable(of: NowPlayingRes.self,completionHandler:{ (response) in
+        request.responseDecodable(of: MoviesRes.self,completionHandler:{ (response) in
+            guard let nowPlayingResponse = response.value else { return }
+            completionsHandler(nowPlayingResponse)
+        })
+    }
+    
+    public func getTopRatedMovies(page: Int,completionsHandler: @escaping (MoviesRes) -> Void) {
+        let paramaters = [
+            "api_key": apiKey,
+            "page": String(page)
+        ]
+        let request = AF.request("\(baseUrl)movie/top_rated",parameters: paramaters)
+        request.responseDecodable(of: MoviesRes.self,completionHandler:{ (response) in
             guard let nowPlayingResponse = response.value else { return }
             completionsHandler(nowPlayingResponse)
         })
