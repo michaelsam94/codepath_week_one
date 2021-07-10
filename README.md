@@ -12,14 +12,14 @@ The following **required** functionality is completed:
 - [x] Add pagination in currently playing movies. [5 Hr]
 - [x] User can view movie details by tapping on a cell. [8 Hr]
 - [x] ser sees loading state while waiting for the API. [3 Hr]
-- [ ] User sees an error message when there is a network error.
+- [x] User sees an error message when there is a network error. [5 Hr]
 - [x] User can pull to refresh the movie list. [2 Hr]
 
 The following **optional** features are implemented:
 
 - [x] Add a tab bar for **Now Playing** and **Top Rated** movies. [2 Hr]
 - [ ] Implement segmented control to switch between list view and grid view.
-- [ ] Add a search bar.
+- [x] Add a search bar. [3 Hr]
 - [ ] All images fade in.
 - [ ] For the large poster, load the low-res image first, switch to high-res when complete.
 - [ ] Customize the highlight and selection effect of the cell.
