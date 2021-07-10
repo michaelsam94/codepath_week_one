@@ -9,8 +9,6 @@ import UIKit
 import Alamofire
 import RappleProgressHUD
 
-let baseUrl = "https://api.themoviedb.org/3/"
-let apiKey = "6bdd92e829e5beb0f2902f834db79e10"
 
 class NowPlayingTableViewCell: UITableViewCell {
     
@@ -61,6 +59,16 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         nowPlayingTableView?.addSubview(refreshControl)
         fetchMovies()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "movieDetailsSegue" {
+            let cell = sender as! UITableViewCell
+            if let index = nowPlayingTableView.indexPath(for: cell) {
+                let movieDetailsVC = segue.destination as! MovieDetailsViewController
+                movieDetailsVC.movieId = movies?[index.row].id
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

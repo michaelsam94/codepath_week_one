@@ -29,8 +29,17 @@ class NetworkOperations {
             guard let nowPlayingResponse = response.value else { return }
             completionsHandler(nowPlayingResponse)
         })
-        
- 
     }
     
+    public func getMovieDetails(movieId: Int,completionsHandler: @escaping (MovieDetailsRes) -> Void) {
+        let parmaters = [
+            "api_key": apiKey,
+            "append_to_response": "trailers,reviews"
+        ]
+        let request = AF.request("\(baseUrl)/movie/\(String(movieId))",parameters: parmaters)
+        request.responseDecodable(of: MovieDetailsRes.self,completionHandler: {(response) in
+            guard let movieDetailsRes = response.value else {return}
+            completionsHandler(movieDetailsRes)
+        })
+    }
 }
