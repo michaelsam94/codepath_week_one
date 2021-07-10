@@ -10,23 +10,9 @@ import Alamofire
 import RappleProgressHUD
 
 
-class MoviesTableViewCell: UITableViewCell {
+class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,AlertDisplayer {
     
-    @IBOutlet weak var movieImageView: UIImageView!
-    
-    @IBOutlet weak var movieTitleLabel: UILabel!
-    @IBOutlet weak var movieDescTextView: UITextView!
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        movieImageView.image = nil
-        movieImageView.cancelImageLoad()
-    }
-}
-
-
-class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableViewDataSource {
-    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     @IBOutlet weak var nowPlayingTableView: UITableView!
     
@@ -55,9 +41,11 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
         super.viewDidLoad()
         nowPlayingTableView.delegate = self
         nowPlayingTableView.dataSource = self
+        searchBar.delegate = self
         refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         nowPlayingTableView?.addSubview(refreshControl)
+        startNetworkMonitoring()
         fetchMovies()
     }
     
@@ -90,11 +78,35 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let nowPlayingCell = cell as? MoviesTableViewCell
+        
         nowPlayingCell?.movieTitleLabel.text = movies?[indexPath.row].title ?? "no title"
         nowPlayingCell?.movieDescTextView.text = movies?[indexPath.row].overview ?? "no overview"
         if let imagePath = movies?[indexPath.row].poster_path {
             nowPlayingCell?.movieImageView?.loadImage(at: "\(posterBaseUrl)\(imagePath)")
             //print("imagepath https://image.tmdb.org/t/p/w154\(imagePath)")
+        }
+        
+        
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        if let isSearchBarEmpty = self.searchBar?.text?.isEmpty {
+            if !isSearchBarEmpty {
+                currentPage = 1
+                numOfLoadedMovies = 0
+                movies?.removeAll()
+                searchMovies(q: self.searchBar.text!)
+            }
+        }
+    }
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            currentPage = 1
+            numOfLoadedMovies = 0
+            movies?.removeAll()
+            fetchMovies()
         }
     }
     
@@ -106,7 +118,7 @@ class NowPlayingViewController : UIViewController,UITableViewDelegate,UITableVie
         fetchMovies()
     }
     
-
+    
     
 }
 
@@ -118,21 +130,39 @@ extension NowPlayingViewController {
         }
         self.isFetchInProgress = true
         
-        NetworkOperations().getNowPlayingMovies(page: currentPage, completionsHandler: {(respone) in
-            self.currentPage += 1
-            self.isFetchInProgress = false
-            self.numOfLoadedMovies += respone.results?.count ?? 0
-            
-            self.totalNumberOfMovies = respone.total_results ?? 1
-            self.movies?.append(contentsOf: respone.results ?? [])
-            
-            self.nowPlayingTableView.reloadData()
-            
-            if respone.page ?? 1 > 1 {
-                let indexPathsToBeReload = self.calculateIndexPathsToReload(from: respone.results ?? [])
-                self.nowPlayingTableView.reloadRows(at: indexPathsToBeReload, with: .automatic)
+        NetworkOperations().getNowPlayingMovies(page: currentPage, completionsHandler: {(response) in
+            if response.page != nil && response.total_results != nil && response.results != nil {
+                self.addMovieToTable(page: response.page!, totalNumberOfMovies: response.total_results!, movies: response.results!)
             }
         })
+    }
+    
+    func searchMovies(q: String) {
+        guard !self.isFetchInProgress else {
+            return
+        }
+        self.isFetchInProgress = true
+        
+        NetworkOperations().search(page: currentPage, query: q, completionsHandler: {(response) in
+            if response.page != nil && response.total_results != nil && response.results != nil {
+                self.addMovieToTable(page: response.page!, totalNumberOfMovies: response.total_results!, movies: response.results!)
+            }
+        })
+    }
+    
+    
+    func addMovieToTable(page: Int,totalNumberOfMovies: Int,movies: [Result]){
+        self.currentPage += 1
+        self.isFetchInProgress = false
+        self.numOfLoadedMovies += movies.count
+        self.totalNumberOfMovies = totalNumberOfMovies
+        self.movies?.append(contentsOf: movies)
+        self.nowPlayingTableView.reloadData()
+        
+        if page > 1 {
+            let indexPathsToBeReload = self.calculateIndexPathsToReload(from: movies)
+            self.nowPlayingTableView.reloadRows(at: indexPathsToBeReload, with: .automatic)
+        }
     }
     
     

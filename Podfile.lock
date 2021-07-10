@@ -3,23 +3,27 @@ PODS:
   - AlamofireNetworkActivityLogger (3.4.0):
     - Alamofire (~> 5.4.0)
   - RappleProgressHUD (4.1)
+  - Reachability (3.2)
 
 DEPENDENCIES:
   - Alamofire (~> 5.2)
   - AlamofireNetworkActivityLogger
   - RappleProgressHUD
+  - Reachability
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - AlamofireNetworkActivityLogger
     - RappleProgressHUD
+    - Reachability
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   AlamofireNetworkActivityLogger: 162ab8aee00e6267a4304d7cc134e13ccfe3bcc5
   RappleProgressHUD: f29bc5dc5f9834c2caa9c2ae21ba11f3ff2b5a85
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
 
-PODFILE CHECKSUM: 39928870f258be7b51b613ef5b713ce31397e41d
+PODFILE CHECKSUM: 0d8f9bb7a0101a6aacd8f13637afdd539dd83804
 
 COCOAPODS: 1.10.1

@@ -109,11 +109,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="RjF-PK-j4V">
-                                <rect key="frame" x="0.0" y="88" width="375" height="641"/>
+                                <rect key="frame" x="0.0" y="94" width="375" height="635"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search Movies" id="sOP-mD-5K7">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </searchBar>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="moviesTableViewCell" id="C3h-zf-ztu" customClass="MoviesTableViewCell" customModule="codepath_week_one" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="24.333333969116211" width="375" height="180.33332824707031"/>
+                                        <rect key="frame" x="0.0" y="68.333333969116211" width="375" height="180.33332824707031"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="C3h-zf-ztu" id="KnG-r6-s2L">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="180.33332824707031"/>
@@ -168,9 +173,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Y89-UF-YA4" firstAttribute="bottom" secondItem="RjF-PK-j4V" secondAttribute="bottom" id="Cga-2L-XBK"/>
-                            <constraint firstItem="RjF-PK-j4V" firstAttribute="top" secondItem="Y89-UF-YA4" secondAttribute="top" id="DgP-GO-Tpd"/>
                             <constraint firstItem="RjF-PK-j4V" firstAttribute="leading" secondItem="Y89-UF-YA4" secondAttribute="leading" id="HAw-Do-OYS"/>
                             <constraint firstItem="Y89-UF-YA4" firstAttribute="trailing" secondItem="RjF-PK-j4V" secondAttribute="trailing" id="Zlv-66-rTh"/>
+                            <constraint firstItem="RjF-PK-j4V" firstAttribute="top" secondItem="Y89-UF-YA4" secondAttribute="top" constant="6" id="cNV-VM-bPg"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Now Playing" image="movies" selectedImage="movies" id="vXA-2d-eOG">
@@ -178,6 +183,7 @@
                     </tabBarItem>
                     <connections>
                         <outlet property="nowPlayingTableView" destination="RjF-PK-j4V" id="u5C-wG-GfA"/>
+                        <outlet property="searchBar" destination="sOP-mD-5K7" id="rnO-nd-YVo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cZ9-Aa-ZVX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

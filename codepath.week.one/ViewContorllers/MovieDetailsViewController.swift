@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RappleProgressHUD
 
 class MovieDetailsViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
@@ -27,31 +28,22 @@ class MovieDetailsViewController: UIViewController,UITableViewDelegate,UITableVi
     var reviews: ReviewsClass?
     var trailers: TrailersClass?
     
+    var isFetchData: Bool = false {
+        didSet {
+            if isFetchData {
+                RappleActivityIndicatorView.startAnimating()
+            } else {
+                RappleActivityIndicatorView.stopAnimation()
+            }
+            
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         trailesAndReviewTableView.dataSource = self
         trailesAndReviewTableView.delegate = self
-        if let movieId = movieId {
-            NetworkOperations().getMovieDetails(movieId: movieId, completionsHandler: {(movieDetails) in
-                if let posterUrl = movieDetails.poster_path {
-                    self.posterImageView.loadImage(at: "\(posterBaseUrl)\(posterUrl)")
-                    self.movieTitleLabel.text = movieDetails.title!
-                    var allGeneres: String = ""
-                    for (genere) in movieDetails.genres! {
-                        if genere == movieDetails.genres?.last { allGeneres.append(genere.name!) }
-                        else {allGeneres.append("\(genere.name!), ")}
-                    }
-                    self.generesLabel.text = allGeneres
-                    self.releaseDateLabel.text = movieDetails.release_date!
-                    self.rateLabel.text = "\(String(movieDetails.vote_average!)) / 10.0"
-                    self.runtimeLabel.text = "\(movieDetails.runtime!) Minutes"
-                    self.descriptionTextView.text = movieDetails.overview!
-                    self.reviews = movieDetails.reviews
-                    self.trailers = movieDetails.trailers
-                    self.trailesAndReviewTableView.reloadData()
-                }
-            })
-        }
+        getMovieDetails()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -125,7 +117,37 @@ class MovieDetailsViewController: UIViewController,UITableViewDelegate,UITableVi
                 UIApplication.shared.open(webUrl!, options: [:], completionHandler: nil)
             }
         }
+    }
+    
+    
+    func getMovieDetails() {
+        guard !isFetchData else {
+            return
+        }
+        isFetchData = true
         
+        if let movieId = movieId {
+            NetworkOperations().getMovieDetails(movieId: movieId, completionsHandler: {(movieDetails) in
+                if let posterUrl = movieDetails.poster_path {
+                    self.isFetchData = false
+                    self.posterImageView.loadImage(at: "\(posterBaseUrl)\(posterUrl)")
+                    self.movieTitleLabel.text = movieDetails.title!
+                    var allGeneres: String = ""
+                    for (genere) in movieDetails.genres! {
+                        if genere == movieDetails.genres?.last { allGeneres.append(genere.name!) }
+                        else {allGeneres.append("\(genere.name!), ")}
+                    }
+                    self.generesLabel.text = allGeneres
+                    self.releaseDateLabel.text = movieDetails.release_date!
+                    self.rateLabel.text = "\(String(movieDetails.vote_average!)) / 10.0"
+                    self.runtimeLabel.text = "\(movieDetails.runtime!) Minutes"
+                    self.descriptionTextView.text = movieDetails.overview!
+                    self.reviews = movieDetails.reviews
+                    self.trailers = movieDetails.trailers
+                    self.trailesAndReviewTableView.reloadData()
+                }
+            })
+        }
         
     }
     

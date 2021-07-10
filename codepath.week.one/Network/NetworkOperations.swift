@@ -43,6 +43,19 @@ class NetworkOperations {
         })
     }
     
+    public func search(page: Int,query: String,completionsHandler: @escaping (MoviesRes) -> Void) {
+        let paramaters = [
+            "api_key": apiKey,
+            "page": String(page),
+            "query": query
+        ]
+        let request = AF.request("\(baseUrl)search/movie",parameters: paramaters)
+        request.responseDecodable(of: MoviesRes.self,completionHandler:{ (response) in
+            guard let nowPlayingResponse = response.value else { return }
+            completionsHandler(nowPlayingResponse)
+        })
+    }
+    
     public func getMovieDetails(movieId: Int,completionsHandler: @escaping (MovieDetailsRes) -> Void) {
         let parmaters = [
             "api_key": apiKey,
