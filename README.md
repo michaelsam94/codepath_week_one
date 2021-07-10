@@ -10,14 +10,14 @@ The following **required** functionality is completed:
 
 - [x] User can view a list of movies currently playing in theaters. Poster images load asynchronously.[6 Hr]
 - [x] Add pagination in currently playing movies. [5 Hr]
-- [ ] User can view movie details by tapping on a cell.
-- [ ] User sees loading state while waiting for the API.
+- [x] User can view movie details by tapping on a cell. [8 Hr]
+- [x] ser sees loading state while waiting for the API. [3 Hr]
 - [ ] User sees an error message when there is a network error.
-- [ ] User can pull to refresh the movie list.
+- [x] User can pull to refresh the movie list. [2 Hr]
 
 The following **optional** features are implemented:
 
-- [ ] Add a tab bar for **Now Playing** and **Top Rated** movies.
+- [x] Add a tab bar for **Now Playing** and **Top Rated** movies. [2 Hr]
 - [ ] Implement segmented control to switch between list view and grid view.
 - [ ] Add a search bar.
 - [ ] All images fade in.
